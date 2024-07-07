@@ -1,0 +1,13 @@
+{
+	"name": "ds_synapse_nycpayrollsummary",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_synapse_udacitynycpayroll",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
