@@ -1,0 +1,34 @@
+CREATE DATABASE udacity
+GO
+
+USE udacity
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'data_adlsnycpayroll_dfs_core_windows_net') 
+	CREATE EXTERNAL DATA SOURCE [data_adlsnycpayroll_dfs_core_windows_net] 
+	WITH (
+		LOCATION = 'abfss://data@adlsnycpayroll.dfs.core.windows.net/dirstaging' 
+	)
+GO
+-- abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<path-to-data>
+
+IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseDelimitedTextFormat') 
+CREATE EXTERNAL FILE FORMAT [SynapseDelimitedTextFormat] 
+WITH ( FORMAT_TYPE = DELIMITEDTEXT ,
+FORMAT_OPTIONS (
+FIELD_TERMINATOR = ',',
+USE_TYPE_DEFAULT = FALSE
+))
+GO
+
+CREATE EXTERNAL TABLE [dbo].[NYC_Payroll_Summary](
+[FiscalYear] [int] NULL,
+[AgencyName] [varchar](50) NULL,
+[TotalPaid] [float] NULL
+)
+WITH (
+LOCATION = '/',
+DATA_SOURCE = [data_adlsnycpayroll_dfs_core_windows_net],
+FILE_FORMAT = [SynapseDelimitedTextFormat]
+)
+GO
